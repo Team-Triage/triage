@@ -6,8 +6,8 @@ import (
 	"triage/channels/toFilter"
 	"triage/dispatch/grpcClient/client"
 	"triage/dispatch/grpcClient/pb"
+	"triage/types"
 )
-
 
 func Dispatch() {
 	grpcClient := client.ConnectToServer("localhost:9001")
@@ -22,8 +22,13 @@ func sendMesssage(grpcClient *pb.MessageHandlerClient) {
 		if err != nil {
 			fmt.Println("RUH ROH SHAGGY!")
 		}
-		
-		toFilter.AppendMessage(msg)
+		var ack *types.Acknowledgment
+		if response.Status == "nack" {
+			ack = &types.Acknowledgment{Status: response.status, Offset: int(msg.TopicPartition.Offset), Event: msg}
+		} else {
+			ack = &types.Acknowledgment{Status: response.status, Offset: int(msg.TopicPartition.Offset)}
+		}
+		toFilter.AppendMessage(ack)
 	}
 
 }
