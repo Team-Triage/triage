@@ -1,8 +1,8 @@
-For dev environment setup, please see /dev
+Development environment setup:
 
-Kafka
-- From the /triage
-- Move to the /dev/kafka directory
-  - cd /dev/kafka
-- Start kafka cluster using docker compose
-  - docker-compose up -d
+1. Kafka
+  - From the /triage
+  - Move to the /dev/kafka directory
+    - cd /dev/kafka
+  - Start kafka cluster using docker compose
+    - docker-compose up -d
