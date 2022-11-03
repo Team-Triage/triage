@@ -2,15 +2,13 @@ package tmp
 
 import (
 	"fmt"
-	dispatchChan "triage/channels/toDispatch"
+	"time"
 	"triage/data/commitTable"
 )
 
 func Receiver() {
 	for {
-		msg := dispatchChan.GetMessage()
-		fmt.Println(msg.Value)
-
 		fmt.Println(commitTable.CommitHash)
+		time.Sleep(time.Millisecond * 200)
 	}
 }
