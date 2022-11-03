@@ -2,5 +2,7 @@ For dev environment setup, please see /dev
 
 Kafka
 - From the /triage
-- cd /dev/kafka
-- docker-compose up -d
+- Move to the /dev/kafka directory
+  - cd /dev/kafka
+- Start kafka cluster using docker compose
+  - docker-compose up -d
