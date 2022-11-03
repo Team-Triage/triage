@@ -1,14 +1,16 @@
 package toFilter
 
-import "github.com/confluentinc/confluent-kafka-go/kafka"
+import (
+	"triage/types"
+)
 
-var c chan *kafka.Message = make(chan *kafka.Message)
+var c chan *types.Acknowledgment = make(chan *types.Acknowledgment)
 
-func GetMessage() *kafka.Message {
+func GetMessage() *types.Acknowledgment {
 	msg := <-c
 	return msg
 }
 
-func AppendMessage(msg *kafka.Message) {
+func AppendMessage(msg *types.Acknowledgment) {
 	c <- msg
 }
