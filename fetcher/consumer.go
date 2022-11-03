@@ -6,11 +6,13 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	dispatchChan "triage/channels/toDispatch"
+	"triage/data/commitTable"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-func Consume(toDispatch chan *kafka.Message, topic string) {
+func Consume(topic string) {
 	// commented next 5 lines because we're running this from main.go, not the command line
 	// if len(os.Args) != 2 {
 	// 	fmt.Fprintf(os.Stderr, "Usage: %s <config-file-path>\n",
@@ -50,10 +52,8 @@ func Consume(toDispatch chan *kafka.Message, topic string) {
 				// Errors are informational and automatically handled by the consumer
 				continue
 			}
-
-			toDispatch <- ev // writing event to channel
-			// fmt.Printf("Consumed event from topic %s: key = %-10s value = %s\n",
-			// 	*ev.TopicPartition.Topic, string(ev.Key), string(ev.Value))
+			dispatchChan.AppendMessage(ev) // writing event to channel
+			commitTable.CommitHash[int(ev.TopicPartition.Offset)] = false
 		}
 	}
 

@@ -2,12 +2,15 @@ package tmp
 
 import (
 	"fmt"
-
-	"github.com/confluentinc/confluent-kafka-go/kafka"
+	dispatchChan "triage/channels/toDispatch"
+	"triage/data/commitTable"
 )
 
-func Receiver(toDispatch chan *kafka.Message) {
-	for msg := range toDispatch {
-		fmt.Println(msg)
+func Receiver() {
+	for {
+		msg := dispatchChan.GetMessage()
+		fmt.Println(msg.Value)
+
+		fmt.Println(commitTable.CommitHash)
 	}
 }
