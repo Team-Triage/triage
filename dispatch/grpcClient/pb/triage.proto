@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package triage;
 
-option go_package = "example.com/triage-grpc";
+option go_package = "example.com/pb";
 
 service MessageHandler {
   rpc SendMessage (Message) returns (MessageResponse) {}
@@ -14,5 +14,5 @@ message Message {
 
 message MessageResponse {
   string body = 1;
-  string status = 2;
+  int32 status = 2;
 }

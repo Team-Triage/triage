@@ -1,15 +1,27 @@
 # Triage
 
-Todo's Tomorrow:
+Weekend Todos:
 
-Mob: Dispatch:
-  - Implement logic to invoke SendMessage goRoutines for each downstream consumer instance(network address)
-    - Listen on channel from Consumer Manager (to be implemented, as well)
-    - When new network address is read off channel, create new gRPC connection/client
-    - call SendMessage goRoutine with respective gRPC client
+Go Get/Module Management - Mike, Aashish
+  - How do we publish a module so a developer can retrieve using go get
+
+Understand gRPC liveness - Jordan, Aashish
+  - What happens if one end of the gRPC connection dies?
+
+Securing gRPC connection - Jordan, Aashish
+
+Securing connection to Kafka Cluster - Mike
+  - How do we authenticate with the Cluster?
+    - What are the most common auth methods?
+    - How do we integrate said methods with Triage?
+
+Wait Groups - Aryan, Mike
+  - How to establish/manage wait groups correctly
+
+Lightest/simplest HTTP Server for Go - Aashish, Aryan
+
 
 Split:
-  - Thin client
   - Reaper
   - Consumer Manager
   - Commit Calculator
