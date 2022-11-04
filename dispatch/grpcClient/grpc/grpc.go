@@ -1,12 +1,12 @@
-package client
+package grpc
 
 import (
 	"context"
 	"log"
 	"time"
 
-
 	pb "triage/dispatch/grpcClient/pb" // import protobuf module
+
 	"google.golang.org/grpc"
 )
 
@@ -28,21 +28,20 @@ func ConnectToServer(address string) pb.MessageHandlerClient {
 	}
 
 	defer conn.Close()
-	
+
 	client := pb.NewMessageHandlerClient(conn) // init client
 
-	return client 
+	return client
 }
 
-func SendMessage(client pb.MessageHandlerClient, msg string) { // will update parameter from string to proper struct
+func SendMessage(client pb.MessageHandlerClient, msg string) string { // will update parameter from string to proper struct
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	
-	resp, err := client.SendMessage(ctx, &pb.Message{Body: msg })//messageFromChannel(channel.C)})
-	
+
+	resp, err := client.SendMessage(ctx, &pb.Message{Body: msg}) //messageFromChannel(channel.C)})
+
 	if err != nil {
 		log.Fatalf("could not get message: %v", err)
 	}
-
-	log.Printf(`Message: %s Status: %v`, resp.GetBody(), resp.GetStatus())
+	return resp.GetStatus() // "ack" or "nack"
 }

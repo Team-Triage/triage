@@ -10,7 +10,7 @@ func Filter() {
 	for {
 		ack := filterChan.GetMessage()
 		fmt.Printf("Filter received message at offset %v\n", ack.Offset)
-		if ack.Status == 1 {
+		if ack.Status == 1 { // if ack, simply updated commitHash
 			commitTable.CommitHash[ack.Offset] = true
 		} else {
 			fmt.Println("Sending to reaper!") // will replace with sending to reaper channel

@@ -1,34 +1,39 @@
 package dispatch
 
 import (
-	"fmt"
+	newConsumersChan "triage/channels/newConsumers"
 	"triage/channels/toDispatch"
 	"triage/channels/toFilter"
-	"triage/dispatch/grpcClient/client"
+	"triage/dispatch/grpcClient/grpc"
 	"triage/dispatch/grpcClient/pb"
 	"triage/types"
 )
 
 func Dispatch() {
-	grpcClient := client.ConnectToServer("localhost:9001")
-	go sendMessage()
-	fmt.Scanln()
+	for {
+		networkAddress := newConsumersChan.GetMessage()
+		client := grpc.ConnectToServer(networkAddress)
+		go senderRoutine(client) // should also accept killchannel and networkAddress, the latter as a unique identifier for killchannel messages
+	}
 }
 
-func sendMesssage(grpcClient *pb.MessageHandlerClient) {
+func senderRoutine(client pb.MessageHandlerClient) {
 	for {
-		msg := toDispatch.GetMessage()
-		response, err := client.SendMessage(grpcClient, msg.Value)
-		if err != nil {
-			fmt.Println("RUH ROH SHAGGY!")
-		}
-		var ack *types.Acknowledgment
-		if response.Status == "nack" {
-			ack = &types.Acknowledgment{Status: response.status, Offset: int(msg.TopicPartition.Offset), Event: msg}
+		event := toDispatch.GetMessage()
+		status := grpc.SendMessage(client, string(event.Value))
+
+		var statusInt int
+		// temporary clause because status is currently a string/should change to int or probably Bool
+		if status == "nack" {
+			statusInt = -1
 		} else {
-			ack = &types.Acknowledgment{Status: response.status, Offset: int(msg.TopicPartition.Offset)}
+			statusInt = 1
+		}
+		var ack *types.Acknowledgment = &types.Acknowledgment{Status: statusInt, Offset: int(event.TopicPartition.Offset)}
+
+		if statusInt < 0 { // if 'nack', add raw message to Acknowledgment struct
+			ack.Event = event
 		}
 		toFilter.AppendMessage(ack)
 	}
-
 }

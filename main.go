@@ -3,12 +3,11 @@ package main
 import (
 	"fmt"
 	"triage/dev/tmp"
-
-	// "triage/dispatch"
 	"triage/fetcher"
 	"triage/filter"
-	// "github.com/confluentinc/confluent-kafka-go/kafka"
 )
+
+// "github.com/confluentinc/confluent-kafka-go/kafka"
 
 const TOPIC string = "triage-test-topic"
 
