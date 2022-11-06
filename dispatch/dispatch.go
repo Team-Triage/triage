@@ -2,6 +2,7 @@ package dispatch
 
 import (
 	"fmt"
+	"sync"
 	"triage/channels/toDispatch"
 	"triage/channels/toFilter"
 	"triage/dispatch/grpcClient/grpc"
@@ -10,13 +11,15 @@ import (
 )
 
 func Dispatch() {
+	var wg sync.WaitGroup
 	// for {
 	// networkAddress := newConsumersChan.GetMessage()
 	networkAddress := "localhost:9001"
 	client := grpc.ConnectToServer(networkAddress)
+	wg.Add(1)
 	go senderRoutine(client) // should also accept killchannel and networkAddress, the latter as a unique identifier for killchannel messages
 	// }
-	fmt.Scanln()
+	wg.Wait()
 }
 
 func senderRoutine(client pb.MessageHandlerClient) {
