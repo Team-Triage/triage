@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/team-triage/triage/commitCalculator"
 	"github.com/team-triage/triage/consumerManager"
 	"github.com/team-triage/triage/dev/tmp"
 	"github.com/team-triage/triage/dispatch"
@@ -20,13 +21,13 @@ var wg sync.WaitGroup
 
 func main() {
 	fmt.Println("Triage firing up!!!")
-	wg.Add(5)
+	wg.Add(7)
 	go fetcher.Consume(TOPIC)
-	// go tmp.DummyDispatch()
 	go dispatch.Dispatch()
 	go filter.Filter()
 	go reaper.Reap()
+	go consumerManager.Start()
+	go commitCalculator.Calculate()
 	go tmp.Receiver()
-	consumerManager.Start()
-	// wg.Wait()
+	wg.Wait()
 }
