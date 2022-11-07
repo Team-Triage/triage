@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package triage;
+
+option go_package = "example.com/pb";
+
+service MessageHandler {
+  rpc SendMessage (Message) returns (MessageResponse) {}
+}
+
+message Message {
+  string body = 1;
+}
+
+message MessageResponse {
+  string body = 1;
+  int32 status = 2;
+}
