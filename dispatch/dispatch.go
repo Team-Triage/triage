@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"triage/channels/acknowledgements"
 	"triage/channels/messages"
-	newConsumersChan "triage/channels/newConsumers"
+
+	"triage/channels/newConsumers"
 	"triage/dispatch/grpcClient/grpc"
 	"triage/dispatch/grpcClient/pb"
 	"triage/types"
@@ -12,7 +13,7 @@ import (
 
 func Dispatch() {
 	for {
-		networkAddress := newConsumersChan.GetMessage()
+		networkAddress := newConsumers.GetMessage()
 		client := grpc.ConnectToServer(networkAddress)
 		go senderRoutine(client) // should also accept killchannel and networkAddress, the latter as a unique identifier for killchannel messages
 	}

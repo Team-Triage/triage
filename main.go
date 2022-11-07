@@ -16,9 +16,8 @@ const TOPIC string = "triage-test-topic"
 var wg sync.WaitGroup
 
 func main() {
-
 	fmt.Println("Triage firing up!!!")
-	wg.Add(1)
+	wg.Add(4)
 	go fetcher.Consume(TOPIC)
 	// go tmp.DummyDispatch()
 	go dispatch.Dispatch()
