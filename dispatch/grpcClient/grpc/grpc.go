@@ -38,7 +38,7 @@ func ConnectToServer(address string) pb.MessageHandlerClient {
 func SendMessage(client pb.MessageHandlerClient, msg string) int32 { // will update parameter from string to proper struct
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	fmt.Println("GRPC is about to send a message!", msg)
+	fmt.Println("GRPC CLIENT: Sending message!", msg)
 	resp, err := client.SendMessage(ctx, &pb.Message{Body: msg})
 	fmt.Println(resp)
 	if err != nil {

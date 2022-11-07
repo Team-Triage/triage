@@ -6,7 +6,6 @@ import (
 
 	"github.com/team-triage/triage/commitCalculator"
 	"github.com/team-triage/triage/consumerManager"
-	"github.com/team-triage/triage/dev/tmp"
 	"github.com/team-triage/triage/dispatch"
 	"github.com/team-triage/triage/fetcher"
 	"github.com/team-triage/triage/filter"
@@ -28,6 +27,6 @@ func main() {
 	go reaper.Reap()
 	go consumerManager.Start()
 	go commitCalculator.Calculate()
-	go tmp.Receiver()
+	// go tmp.Receiver()
 	wg.Wait()
 }

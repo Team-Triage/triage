@@ -23,7 +23,7 @@ func Dispatch() {
 func senderRoutine(client pb.MessageHandlerClient) {
 	for {
 		event := messages.GetMessage()
-		fmt.Printf("Gonna send an event at offset %v: %v\n", int(event.TopicPartition.Offset), string(event.Value))
+		fmt.Printf("DISPATCH: Sending event at offset %v: %v\n", int(event.TopicPartition.Offset), string(event.Value))
 		status := grpc.SendMessage(client, string(event.Value))
 
 		var ack *types.Acknowledgement = &types.Acknowledgement{Status: int(status), Offset: int(event.TopicPartition.Offset)}

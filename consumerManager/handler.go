@@ -19,7 +19,7 @@ func Handler(w http.ResponseWriter, req *http.Request) {
 	}
 	// TODO: need to add auth checking
 	address := consReq.Address
-	fmt.Printf("Consumer requested connection from: %v\n", address)
+	fmt.Printf("CONSUMER MANAGER: Consumer requested connection from: %v\n", address)
 
 	newConsumers.AppendMessage(address)
 	w.WriteHeader(200)

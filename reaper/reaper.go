@@ -9,7 +9,7 @@ import (
 func Reap() {
 	for {
 		ack := deadLetters.GetMessage()
-		fmt.Printf("Got a dead letter: %v \n", string(ack.Event.Value))
+		fmt.Printf("REAPER: Got a dead letter: %v \n", string(ack.Event.Value))
 		// ^ is an abstraction for writing to DynamoDB
 	}
 }

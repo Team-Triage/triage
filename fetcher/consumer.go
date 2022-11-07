@@ -14,6 +14,10 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
+func makeConsumer(topic string) {
+
+}
+
 func Consume(topic string) {
 	// commented next 5 lines because we're running this from main.go, not the command line
 	// if len(os.Args) != 2 {
@@ -41,7 +45,7 @@ func Consume(topic string) {
 	sigchan := make(chan os.Signal, 1)
 	signal.Notify(sigchan, syscall.SIGINT, syscall.SIGTERM)
 	// Process messages
-	fmt.Println("Consumer running!")
+	fmt.Println("FETCHER: Consumer running!")
 	run := true
 	for run {
 		select {
