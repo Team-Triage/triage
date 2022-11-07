@@ -13,7 +13,10 @@ func Filter() {
 		ack := acknowledgements.GetMessage()
 		fmt.Printf("Filter received message at offset %v\n", ack.Offset)
 		if ack.Status == 1 { // if ack, simply updated commitHash
-			commitTable.CommitHash[ack.Offset] = true
+			if entry, ok := commitTable.CommitHash[ack.Offset]; ok {
+				entry.Value = true
+				commitTable.CommitHash[ack.Offset] = entry
+			}
 		} else {
 			deadLetters.AppendMessage(ack)
 		}

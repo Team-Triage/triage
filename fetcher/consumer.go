@@ -9,6 +9,7 @@ import (
 
 	"github.com/team-triage/triage/channels/messages"
 	"github.com/team-triage/triage/data/commitTable"
+	"github.com/team-triage/triage/types"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
@@ -54,7 +55,9 @@ func Consume(topic string) {
 				continue
 			}
 			messages.AppendMessage(ev) // writing event to channel
-			commitTable.CommitHash[int(ev.TopicPartition.Offset)] = false
+			commitStore := types.CommitStore{Value: false, Message: ev}
+			commitTable.CommitHash[int(ev.TopicPartition.Offset)] = commitStore
+
 		}
 	}
 
