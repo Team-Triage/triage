@@ -3,9 +3,10 @@ package tmp
 import (
 	"fmt"
 	"time"
-	"triage/channels/acknowledgements"
-	"triage/channels/messages"
-	"triage/types"
+
+	"github.com/team-triage/triage/channels/acknowledgements"
+	"github.com/team-triage/triage/channels/messages"
+	"github.com/team-triage/triage/types"
 )
 
 func DummyDispatch() {

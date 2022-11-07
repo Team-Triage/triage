@@ -1,7 +1,7 @@
 package acknowledgements
 
 import (
-	"triage/types"
+	"github.com/team-triage/triage/types"
 )
 
 var c chan *types.Acknowledgement = make(chan *types.Acknowledgement)

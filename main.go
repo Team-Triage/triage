@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 	"sync"
-	"triage/dev/tmp"
-	"triage/dispatch"
-	"triage/fetcher"
-	"triage/filter"
+
+	"github.com/team-triage/triage/dev/tmp"
+	"github.com/team-triage/triage/dispatch"
+	"github.com/team-triage/triage/fetcher"
+	"github.com/team-triage/triage/filter"
 )
 
 // "github.com/confluentinc/confluent-kafka-go/kafka"

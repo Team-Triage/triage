@@ -6,8 +6,9 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-	"triage/channels/messages"
-	"triage/data/commitTable"
+
+	"github.com/team-triage/triage/channels/messages"
+	"github.com/team-triage/triage/data/commitTable"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )

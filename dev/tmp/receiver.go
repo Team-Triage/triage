@@ -3,7 +3,8 @@ package tmp
 import (
 	"fmt"
 	"time"
-	"triage/data/commitTable"
+
+	"github.com/team-triage/triage/data/commitTable"
 )
 
 func Receiver() {

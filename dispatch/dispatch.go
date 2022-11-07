@@ -2,13 +2,14 @@ package dispatch
 
 import (
 	"fmt"
-	"triage/channels/acknowledgements"
-	"triage/channels/messages"
 
-	"triage/channels/newConsumers"
-	"triage/dispatch/grpcClient/grpc"
-	"triage/dispatch/grpcClient/pb"
-	"triage/types"
+	"github.com/team-triage/triage/channels/acknowledgements"
+	"github.com/team-triage/triage/channels/messages"
+
+	"github.com/team-triage/triage/channels/newConsumers"
+	"github.com/team-triage/triage/dispatch/grpcClient/grpc"
+	"github.com/team-triage/triage/dispatch/grpcClient/pb"
+	"github.com/team-triage/triage/types"
 )
 
 func Dispatch() {
