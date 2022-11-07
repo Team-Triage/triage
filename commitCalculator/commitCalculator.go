@@ -30,7 +30,7 @@ func Calculate() {
 			continue
 		}
 
-		commits.AppendMessage(maxValidOffset)
+		commits.AppendMessage(commitTable.CommitHash[maxValidOffset].Message)
 		commitTable.Delete(maxValidOffset)
 	}
 }

@@ -21,7 +21,7 @@ var wg sync.WaitGroup
 func main() {
 	fmt.Println("Triage firing up!!!")
 	wg.Add(7)
-	go fetcher.Consume(TOPIC)
+	go fetcher.Fetch(TOPIC)
 	go dispatch.Dispatch()
 	go filter.Filter()
 	go reaper.Reap()

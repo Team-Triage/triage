@@ -1,12 +1,14 @@
 package commits
 
-var c chan int = make(chan int)
+import "github.com/confluentinc/confluent-kafka-go/kafka"
 
-func GetMessage() int {
+var c chan *kafka.Message = make(chan *kafka.Message)
+
+func GetMessage() *kafka.Message {
 	msg := <-c
 	return msg
 }
 
-func AppendMessage(msg int) {
+func AppendMessage(msg *kafka.Message) {
 	c <- msg
 }
