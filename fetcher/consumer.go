@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-	dispatchChan "triage/channels/toDispatch"
+	"triage/channels/messages"
 	"triage/data/commitTable"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -52,7 +52,7 @@ func Consume(topic string) {
 				// Errors are informational and automatically handled by the consumer
 				continue
 			}
-			dispatchChan.AppendMessage(ev) // writing event to channel
+			messages.AppendMessage(ev) // writing event to channel
 			commitTable.CommitHash[int(ev.TopicPartition.Offset)] = false
 		}
 	}

@@ -1,4 +1,4 @@
-package toDispatch
+package messages
 
 import "github.com/confluentinc/confluent-kafka-go/kafka"
 

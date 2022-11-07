@@ -2,13 +2,13 @@ package filter
 
 import (
 	"fmt"
-	filterChan "triage/channels/toFilter"
+	ackChannel "triage/channels/acknowledgements"
 	"triage/data/commitTable"
 )
 
 func Filter() {
 	for {
-		ack := filterChan.GetMessage()
+		ack := ackChannel.GetMessage()
 		fmt.Printf("Filter received message at offset %v\n", ack.Offset)
 		if ack.Status == 1 { // if ack, simply updated commitHash
 			commitTable.CommitHash[ack.Offset] = true
