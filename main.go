@@ -9,6 +9,7 @@ import (
 	"github.com/team-triage/triage/dispatch"
 	"github.com/team-triage/triage/fetcher"
 	"github.com/team-triage/triage/filter"
+	"github.com/team-triage/triage/reaper"
 )
 
 // "github.com/confluentinc/confluent-kafka-go/kafka"
@@ -24,6 +25,7 @@ func main() {
 	// go tmp.DummyDispatch()
 	go dispatch.Dispatch()
 	go filter.Filter()
+	go reaper.Reap()
 	go tmp.Receiver()
 	consumerManager.Start()
 	// wg.Wait()
