@@ -2,26 +2,12 @@ package commitCalculator
 
 import (
 	"log"
-	"sort"
 	"time"
 
 	"github.com/team-triage/triage/channels/commits"
 	"github.com/team-triage/triage/data/commitTable"
-
 	// "github.com/go-co-op/gocron"
-	"golang.org/x/exp/maps"
 )
-
-/*
-create 'cron' job that every X seconds
-	get max valid offset
-	if max valid offset is -1, go to next loop (no valid offsets)
-
-	send the message from the commitHash[offset].Event to the "commits" channel
-		we should have a go routine that listens on that channel, and calls consumer.CommitMessage() on said message
-
-	Iterate through the keys of the commitHash and delete all values that are equal to or lower than the committed offset
-*/
 
 func Calculate() {
 	for {
@@ -30,9 +16,10 @@ func Calculate() {
 		if maxValidOffset == -1 {
 			continue
 		}
-		if kafkaMessage, ok := commitTable.CommitHash[maxValidOffset]; ok {
+		if kafkaMessage, ok := commitTable.CommitHash.Read(maxValidOffset); ok {
+			// commitTable.CommitHash[maxValidOffset]; ok {
 			commits.AppendMessage(kafkaMessage.Message)
-			commitTable.Delete(maxValidOffset)
+			commitTable.Delete(maxValidOffset) // okay because the method uses the underlying method on the SafeCommitHash
 		} else {
 			log.Fatalln("COMMIT CALCULATOR: Could not retrieve kafka message from commitHash")
 		}
@@ -41,20 +28,22 @@ func Calculate() {
 }
 
 func getMessageToCommit() int {
-	offsets := maps.Keys(commitTable.CommitHash)
-	sort.Ints(offsets)
+	offsets := commitTable.CommitHash.GetOffsets()
 	maxValidOffset := -1
 	for _, offset := range offsets {
-		if commitTable.CommitHash[offset].Value == true {
+		// iterate over range of sorted offsets, starting at the lowest
+		if entry, ok := commitTable.CommitHash.Read(offset); ok {
+			// if entry exists
+			if entry.Value != true {
+				// if entry has not been acknowledged, we're at the highest possible offset that we can commit
+				break
+			}
+			// if entry has been acknowledged, keep going
 			maxValidOffset = offset
 		} else {
+			// if entry does not exist, there are no more offsets in the commitHash
 			break
 		}
-		/* look at current offset
-		if value in commitHash is true
-			reassign maxValidOffset to offset
-		else break
-		*/
 	}
 
 	return maxValidOffset
