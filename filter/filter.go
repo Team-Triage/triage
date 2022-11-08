@@ -11,7 +11,7 @@ import (
 func Filter() {
 	for {
 		ack := acknowledgements.GetMessage()
-		fmt.Printf("FILTER: Received message at offset %v\n", ack.Offset)
+		fmt.Printf("FILTER: Received message at offset %v with status %v\n", ack.Offset, ack.Status)
 		if ack.Status == 1 { // if ack, simply updated commitHash
 			if entry, ok := commitTable.CommitHash[ack.Offset]; ok {
 				entry.Value = true

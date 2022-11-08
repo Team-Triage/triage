@@ -1,6 +1,7 @@
 package commitCalculator
 
 import (
+	"log"
 	"sort"
 	"time"
 
@@ -29,16 +30,19 @@ func Calculate() {
 		if maxValidOffset == -1 {
 			continue
 		}
+		if kafkaMessage, ok := commitTable.CommitHash[maxValidOffset]; ok {
+			commits.AppendMessage(kafkaMessage.Message)
+			commitTable.Delete(maxValidOffset)
+		} else {
+			log.Fatalln("COMMIT CALCULATOR: Could not retrieve kafka message from commitHash")
+		}
 
-		commits.AppendMessage(maxValidOffset)
-		commitTable.Delete(maxValidOffset)
 	}
 }
 
 func getMessageToCommit() int {
 	offsets := maps.Keys(commitTable.CommitHash)
 	sort.Ints(offsets)
-
 	maxValidOffset := -1
 	for _, offset := range offsets {
 		if commitTable.CommitHash[offset].Value == true {
