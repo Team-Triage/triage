@@ -13,9 +13,9 @@ func Reap() {
 		fmt.Printf("REAPER: Got a dead letter: %v \n", string(ack.Event.Value))
 		// ^ is an abstraction for writing to DynamoDB
 		// AFTER response from DynamoDB
-		if entry, ok := commitTable.CommitHash[ack.Offset]; ok {
+		if entry, ok := commitTable.CommitHash.Read(ack.Offset); ok {
 			entry.Value = true
-			commitTable.CommitHash[ack.Offset] = entry
+			commitTable.CommitHash.Write(ack.Offset, entry)
 		}
 	}
 }
