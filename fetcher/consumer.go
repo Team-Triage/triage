@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -16,16 +17,20 @@ import (
 )
 
 func Fetch(topic string) {
+	var wg sync.WaitGroup
 	c := makeConsumer()
 	go consume(c, topic)
-	committer(c)
+	wg.Add(1)
+	go committer(c)
+	wg.Add(1)
+	wg.Wait()
 }
 
 func makeConsumer() *kafka.Consumer {
 	configFile := "dev/tmp/devConfig.properties" // os.Args[1] hard-coding the relative file path for now, since we're running from main.go
 	conf := ReadConfig(configFile)
 	conf["group.id"] = "kafka-go-getting-started" // need to make this an environmental variable so all instances of a given deployment share the same group.id
-	conf["auto.offset.reset"] = "earliest"        // policy for when triage "dies"
+	conf["auto.offset.reset"] = "earliest"        // REQUIRES ADDITIONAL READING policy for when triage first connects to Kafka
 	conf["enable.auto.commit"] = "false"          // turned off for manual committing (see consumer.Commit() or consumer.CommitMessage())
 
 	c, err := kafka.NewConsumer(&conf)
@@ -94,6 +99,8 @@ func consume(c *kafka.Consumer, topic string) {
 func committer(c *kafka.Consumer) {
 	for {
 		msg := commits.GetMessage()
+		fmt.Printf("FETCHER: Going to commit offset: %v\n", msg.TopicPartition.Offset)
 		c.CommitMessage(msg)
+		fmt.Println("FETCHER: Committed successfully!")
 	}
 }
