@@ -17,7 +17,6 @@ func Calculate() {
 			continue
 		}
 		if kafkaMessage, ok := commitTable.CommitHash.Read(maxValidOffset); ok {
-			// commitTable.CommitHash[maxValidOffset]; ok {
 			commits.AppendMessage(kafkaMessage.Message)
 			commitTable.Delete(maxValidOffset) // okay because the method uses the underlying method on the SafeCommitHash
 		} else {

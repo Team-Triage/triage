@@ -9,20 +9,14 @@ import (
 	"github.com/team-triage/triage/dispatch/grpcClient/pb" // import protobuf module
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/keepalive"
 )
 
-// const (
-// 	address = "localhost:9001"
-// )
-
-// func messageFromChannel(c chan string) string {
-// 	go channel.Pinger(channel.C)
-// 	msg := channel.Printer(channel.C)
-// 	return msg
-// }
-
 func ConnectToServer(address string) pb.MessageHandlerClient {
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithKeepaliveParams(keepalive.ClientParameters{
+		Time:    time.Second * 5, // how long we wait to hear back from the server before closing connection
+		Timeout: time.Second * 1, // frequency of pings
+	}))
 
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -36,7 +30,7 @@ func ConnectToServer(address string) pb.MessageHandlerClient {
 }
 
 func SendMessage(client pb.MessageHandlerClient, msg string) int32 { // will update parameter from string to proper struct
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 	fmt.Println("GRPC CLIENT: Sending message!", msg)
 	resp, err := client.SendMessage(ctx, &pb.Message{Body: msg})
