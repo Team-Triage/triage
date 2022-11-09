@@ -6,5 +6,5 @@ import (
 
 func StartServer(callback func(w http.ResponseWriter, req *http.Request)) {
 	http.HandleFunc("/consumers", callback)
-	http.ListenAndServe(":9090", nil)
+	http.ListenAndServe(":9000", nil)
 }
