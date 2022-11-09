@@ -52,6 +52,7 @@ func consume(c *kafka.Consumer, topic string) {
 	sigchan := make(chan os.Signal, 1)
 	signal.Notify(sigchan, syscall.SIGINT, syscall.SIGTERM)
 	// Process messages
+	fmt.Println(c, topic)
 	fmt.Println("FETCHER: Consumer running!")
 	run := true
 	for run {

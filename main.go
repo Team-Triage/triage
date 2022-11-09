@@ -14,7 +14,7 @@ import (
 
 // "github.com/confluentinc/confluent-kafka-go/kafka"
 
-const TOPIC string = "triage-test-topic"
+const TOPIC string = "tester_topic"
 
 var wg sync.WaitGroup
 
