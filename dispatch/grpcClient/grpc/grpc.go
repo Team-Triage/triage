@@ -24,10 +24,9 @@ func makeConnection(address string) (*grpc.ClientConn, error) {
 	return conn, err
 }
 
-func ConnectToServer(address string) pb.MessageHandlerClient {
+func MakeClient(address string) pb.MessageHandlerClient {
 	conn, err := makeConnection(address)
 	if err != nil {
-		fmt.Println("GRPC: We got an error", err)
 		log.Fatalf("did not connect: %v", err)
 	}
 
@@ -49,6 +48,7 @@ func SendMessage(client pb.MessageHandlerClient, msgValue string) (int32, error)
 	fmt.Println(resp)
 
 	if err != nil {
+		fmt.Println(err)
 		return int32(0), err
 		// return zero-valued int32, error
 		// log.Fatalf("could not get message: %v", err)
