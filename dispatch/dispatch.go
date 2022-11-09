@@ -24,7 +24,14 @@ func senderRoutine(client pb.MessageHandlerClient) {
 	for {
 		event := messages.GetMessage()
 		fmt.Printf("DISPATCH: Sending event at offset %v: %v\n", int(event.TopicPartition.Offset), string(event.Value))
-		status := grpc.SendMessage(client, string(event.Value))
+
+		status, err := grpc.SendMessage(client, string(event.Value))
+
+		if err != nil {
+			fmt.Println("SENDER ROUTINE: CONSUMER DEATH DETECTED - APPENDING TO MESSAGES")
+			messages.AppendMessage(event)
+			break
+		}
 
 		var ack *types.Acknowledgement = &types.Acknowledgement{Status: int(status), Offset: int(event.TopicPartition.Offset)}
 

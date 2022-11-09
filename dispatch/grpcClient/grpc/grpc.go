@@ -12,31 +12,48 @@ import (
 	"google.golang.org/grpc/keepalive"
 )
 
-func ConnectToServer(address string) pb.MessageHandlerClient {
+func makeConnection(address string) (*grpc.ClientConn, error) {
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithKeepaliveParams(keepalive.ClientParameters{
-		Time:    time.Second * 5, // how long we wait to hear back from the server before closing connection
+		Time:    time.Second * 3, // how long we wait to hear back from the server before closing connection
 		Timeout: time.Second * 1, // frequency of pings
 	}))
 
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
+	return conn, err
+}
 
-	// defer conn.Close()
+func ConnectToServer(address string) pb.MessageHandlerClient {
+	conn, err := makeConnection(address)
+	if err != nil {
+		fmt.Println("GRPC: We got an error", err)
+		log.Fatalf("did not connect: %v", err)
+	}
 
 	client := pb.NewMessageHandlerClient(conn) // init client
 
 	return client
+	// defer conn.Close()
 }
 
-func SendMessage(client pb.MessageHandlerClient, msg string) int32 { // will update parameter from string to proper struct
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+func SendMessage(client pb.MessageHandlerClient, msgValue string) (int32, error) { // will update parameter from string to proper struct
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute*5) // nice to have: adjust this and make it configurable during deployment
+
 	defer cancel()
-	fmt.Println("GRPC CLIENT: Sending message!", msg)
-	resp, err := client.SendMessage(ctx, &pb.Message{Body: msg})
+
+	fmt.Println("GRPC CLIENT: Sending message!", msgValue)
+
+	resp, err := client.SendMessage(ctx, &pb.Message{Body: msgValue})
+
 	fmt.Println(resp)
+
 	if err != nil {
-		log.Fatalf("could not get message: %v", err)
+		return int32(0), err
+		// return zero-valued int32, error
+		// log.Fatalf("could not get message: %v", err)
+		// push message to messages channel, then break out of wrapping goRoutine
 	}
-	return resp.GetStatus() // "ack" or "nack"
+
+	return resp.GetStatus(), nil // "ack" or "nack"
 }
