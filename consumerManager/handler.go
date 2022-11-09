@@ -1,26 +1,40 @@
 package consumerManager
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/team-triage/triage/channels/newConsumers"
-	"github.com/team-triage/triage/types"
 )
 
-func Handler(w http.ResponseWriter, req *http.Request) {
-	var consReq types.ConsumerRequest
-	fmt.Println(req)
-	err := json.NewDecoder(req.Body).Decode(&consReq)
-	if err != nil {
-		http.Error(w, err.Error(), 400)
+func handler(w http.ResponseWriter, req *http.Request) {
+	dummyToken := "dummyToken"
+
+	if entry, ok := req.Header["Authorization"]; ok {
+		if dummyToken != entry[0] { // token doesn't match
+			http.Error(w, "Malformed or invalid authorization token", 401)
+			return
+		}
+	} else { // missing token
+		http.Error(w, "Missing Authorization header", 400)
 		return
 	}
-	// TODO: need to add auth checking
-	address := consReq.Address
-	fmt.Printf("CONSUMER MANAGER: Consumer requested connection from: %v\n", address)
 
-	newConsumers.AppendMessage(address)
+	remoteIp := strings.Split(req.RemoteAddr, ":")[0]
+
+	var grpcPort string
+
+	if entry, ok := req.Header["Grpcport"]; ok {
+		grpcPort = entry[0]
+	} else { // no grpcport in header
+		http.Error(w, "Missing gRPC port header", 401)
+		return
+	}
+
+	consumerAddress := remoteIp + ":" + grpcPort
+	fmt.Printf("CONSUMER MANAGER: Consumer requested connection from: %v\n", consumerAddress)
+
+	newConsumers.AppendMessage(consumerAddress)
 	w.WriteHeader(200)
 }

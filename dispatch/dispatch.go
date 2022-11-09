@@ -17,6 +17,7 @@ import (
 func Dispatch() {
 	for {
 		networkAddress := newConsumers.GetMessage()
+		fmt.Println("DISPATCH: network address found!", networkAddress)
 		client := grpc.MakeClient(networkAddress)
 		go senderRoutine(client) // should also accept killchannel and networkAddress, the latter as a unique identifier for killchannel messages
 	}
@@ -42,7 +43,7 @@ func senderRoutine(client pb.MessageHandlerClient) {
 			}
 		}
 
-		var ack *types.Acknowledgement = &types.Acknowledgement{Status: int(respStatus), Offset: int(event.TopicPartition.Offset)}
+		var ack *types.Acknowledgement = &types.Acknowledgement{Status: respStatus, Offset: int(event.TopicPartition.Offset)}
 
 		if respStatus < 0 { // if 'nack', add raw message to Acknowledgment struct
 			ack.Event = event

@@ -1,5 +1,5 @@
 package consumerManager
 
 func Start() {
-	StartServer(Handler)
+	StartServer(handler)
 }

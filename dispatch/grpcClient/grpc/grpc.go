@@ -36,8 +36,8 @@ func MakeClient(address string) pb.MessageHandlerClient {
 	// defer conn.Close()
 }
 
-func SendMessage(client pb.MessageHandlerClient, msgValue string) (int32, error) { // will update parameter from string to proper struct
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute*5) // nice to have: adjust this and make it configurable during deployment
+func SendMessage(client pb.MessageHandlerClient, msgValue string) (int, error) { // will update parameter from string to proper struct
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5) // nice to have: adjust this and make it configurable during deployment
 
 	defer cancel()
 
@@ -45,15 +45,13 @@ func SendMessage(client pb.MessageHandlerClient, msgValue string) (int32, error)
 
 	resp, err := client.SendMessage(ctx, &pb.Message{Body: msgValue})
 
-	fmt.Println(resp)
-
 	if err != nil {
 		fmt.Println(err)
-		return int32(0), err
+		return 0, err
 		// return zero-valued int32, error
 		// log.Fatalf("could not get message: %v", err)
 		// push message to messages channel, then break out of wrapping goRoutine
 	}
 
-	return resp.GetStatus(), nil // "ack" or "nack"
+	return int(resp.GetStatus()), nil // "ack" or "nack"
 }
