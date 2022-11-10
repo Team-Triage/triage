@@ -19,6 +19,7 @@ func Dispatch() {
 		networkAddress := newConsumers.GetMessage()
 		fmt.Println("DISPATCH: network address found!", networkAddress)
 		client := grpc.MakeClient(networkAddress)
+		fmt.Println("Starting sender routine")
 		go senderRoutine(client) // should also accept killchannel and networkAddress, the latter as a unique identifier for killchannel messages
 	}
 }

@@ -4,24 +4,29 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/team-triage/triage/commitCalculator"
 	"github.com/team-triage/triage/consumerManager"
 	"github.com/team-triage/triage/dispatch"
 	"github.com/team-triage/triage/fetcher"
 	"github.com/team-triage/triage/filter"
 	"github.com/team-triage/triage/reaper"
+	"github.com/team-triage/triage/utils"
 )
-
-// "github.com/confluentinc/confluent-kafka-go/kafka"
-
-const TOPIC string = "triage-test-topic"
 
 var wg sync.WaitGroup
 
 func main() {
+	kafkaConf := kafka.ConfigMap{}
 	fmt.Println("Triage firing up!!!")
-	wg.Add(6)
-	go fetcher.Fetch(TOPIC)
+
+	path := "config.properties"
+	config := utils.ReadConfig(path)
+	kafkaConf["bootstrap.servers"] = config["kafka.bootstrap.servers"]
+	topic := config["kafka.topic"]
+
+	wg.Add(7)
+	go fetcher.Fetch(topic, kafkaConf)
 	go dispatch.Dispatch()
 	go filter.Filter()
 	go reaper.Reap()
