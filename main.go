@@ -23,6 +23,12 @@ func main() {
 	path := "config.properties"
 	config := utils.ReadConfig(path)
 	kafkaConf["bootstrap.servers"] = config["kafka.bootstrap.servers"]
+	kafkaConf["security.protocol"] = config["security.protocol"]
+	kafkaConf["sasl.mechanisms"] = config["sasl.mechanisms"]
+	kafkaConf["sasl.username"] = config["sasl.username"]
+	kafkaConf["sasl.password"] = config["sasl.password"]
+	kafkaConf["session.timeout.ms"] = config["session.timeout.ms"]
+
 	topic := config["kafka.topic"]
 
 	wg.Add(7)
