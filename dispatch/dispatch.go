@@ -29,6 +29,16 @@ func senderRoutine(client pb.MessageHandlerClient) {
 		event := messages.GetMessage()
 		fmt.Printf("DISPATCH: Sending event at offset %v: %v\n", int(event.TopicPartition.Offset), string(event.Value))
 
+		fmt.Printf("DISPATCH: Sending event topic :%v\n partition: %v\n offset: %v\n key: %v\n value: %v\n timestamp: %v\n headers: %v\n",
+			&event.TopicPartition.Topic,
+			event.TopicPartition.Partition,
+			int(event.TopicPartition.Offset),
+			string(event.Key),
+			string(event.Value),
+			event.Timestamp,
+			event.Headers,
+		)
+
 		respStatus, err := grpc.SendMessage(client, string(event.Value))
 
 		if err != nil {
