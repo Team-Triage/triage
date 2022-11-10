@@ -33,8 +33,8 @@ func handler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	consumerAddress := remoteIp + ":" + grpcPort
-	fmt.Printf("CONSUMER MANAGER: Consumer requested connection from: %v\n", consumerAddress)
+	fmt.Printf("CONSUMER MANAGER: Consumer requested connection from: %v\n", remoteIp)
 
 	newConsumers.AppendMessage(consumerAddress)
-	w.WriteHeader(200)
+	fmt.Fprintf(w, "Prepare to receive messages!")
 }
