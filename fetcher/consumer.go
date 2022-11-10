@@ -16,9 +16,9 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-func Fetch(topic string) {
+func Fetch(topic string, kafkaConf kafka.ConfigMap) {
 	var wg sync.WaitGroup
-	c := makeConsumer()
+	c := makeConsumer(kafkaConf)
 	go consume(c, topic)
 	wg.Add(1)
 	go committer(c)
@@ -26,14 +26,12 @@ func Fetch(topic string) {
 	wg.Wait()
 }
 
-func makeConsumer() *kafka.Consumer {
-	configFile := "dev/tmp/devConfig.properties" // os.Args[1] hard-coding the relative file path for now, since we're running from main.go
-	conf := ReadConfig(configFile)
-	conf["group.id"] = "kafka-go-getting-started" // need to make this an environmental variable so all instances of a given deployment share the same group.id
-	conf["auto.offset.reset"] = "earliest"        // REQUIRES ADDITIONAL READING policy for when triage first connects to Kafka
-	conf["enable.auto.commit"] = "false"          // turned off for manual committing (see consumer.Commit() or consumer.CommitMessage())
+func makeConsumer(kafkaConf kafka.ConfigMap) *kafka.Consumer {
+	kafkaConf["group.id"] = "kafka-go-getting-started" // need to make this an environmental variable so all instances of a given deployment share the same group.id
+	kafkaConf["auto.offset.reset"] = "earliest"        // REQUIRES ADDITIONAL READING policy for when triage first connects to Kafka
+	kafkaConf["enable.auto.commit"] = "false"          // turned off for manual committing (see consumer.Commit() or consumer.CommitMessage())
 
-	c, err := kafka.NewConsumer(&conf)
+	c, err := kafka.NewConsumer(&kafkaConf)
 
 	if err != nil {
 		fmt.Printf("Failed to create consumer: %s", err)
