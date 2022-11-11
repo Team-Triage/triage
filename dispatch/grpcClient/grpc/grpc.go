@@ -37,7 +37,7 @@ func MakeClient(address string) pb.MessageHandlerClient {
 }
 
 func SendMessage(client pb.MessageHandlerClient, msgValue string) (int, error) { // will update parameter from string to proper struct
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5) // nice to have: adjust this and make it configurable during deployment
+	ctx, cancel := context.WithTimeout(context.Background(), time.Minute*5) // nice to have: adjust this and make it configurable during deployment
 
 	defer cancel()
 
