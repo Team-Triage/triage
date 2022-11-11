@@ -24,7 +24,7 @@ func makeConnection(address string) (*grpc.ClientConn, error) {
 	return conn, err
 }
 
-func MakeClient(address string) pb.MessageHandlerClient {
+func MakeClient(address string) (pb.MessageHandlerClient, *grpc.ClientConn) {
 	conn, err := makeConnection(address)
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -32,7 +32,7 @@ func MakeClient(address string) pb.MessageHandlerClient {
 
 	client := pb.NewMessageHandlerClient(conn) // init client
 
-	return client
+	return client, conn
 	// defer conn.Close()
 }
 
