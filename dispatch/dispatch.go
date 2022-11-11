@@ -20,11 +20,11 @@ func Dispatch() {
 		fmt.Printf("DISPATCH: network address found: %v\n", networkAddress)
 		client := grpc.MakeClient(networkAddress)
 		fmt.Printf("Starting sender routine for consumer at: %v\n", networkAddress)
-		go senderRoutine(client) // should also accept killchannel and networkAddress, the latter as a unique identifier for killchannel messages
+		go senderRoutine(client, networkAddress) // should also accept killchannel and networkAddress, the latter as a unique identifier for killchannel messages
 	}
 }
 
-func senderRoutine(client pb.MessageHandlerClient) {
+func senderRoutine(client pb.MessageHandlerClient, networkAddress string) {
 	for {
 		event := messages.GetMessage()
 		fmt.Printf("DISPATCH: Sending event at offset %v: %v\n", int(event.TopicPartition.Offset), string(event.Value))
@@ -35,10 +35,10 @@ func senderRoutine(client pb.MessageHandlerClient) {
 			if status.Code(err) == codes.DeadlineExceeded {
 				nack := &types.Acknowledgement{Status: -1, Offset: int(event.TopicPartition.Offset), Event: event}
 				acknowledgements.AppendMessage(nack)
-				fmt.Printf("SENDER ROUTINE: Deadline exceeded for offset %v - NACKING AND MOVING ON\n", nack.Offset)
+				fmt.Printf("SENDER ROUTINE: Deadline exceeded for offset: %v consumer: %v NACKING AND MOVING ON\n", nack.Offset, networkAddress)
 				continue
 			} else if status.Code(err) == codes.Unavailable {
-				fmt.Println("SENDER ROUTINE: CONSUMER DEATH DETECTED - APPENDING TO MESSAGES")
+				fmt.Printf("SENDER ROUTINE: CONSUMER DEATH at %v DETECTED - APPENDING TO MESSAGES\n", networkAddress)
 				messages.AppendMessage(event)
 				break
 			}
