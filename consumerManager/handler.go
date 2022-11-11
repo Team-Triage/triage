@@ -21,15 +21,22 @@ func handler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	remoteIp := strings.Split(req.RemoteAddr, ":")[0]
-
 	var grpcPort string
 
 	if entry, ok := req.Header["Grpcport"]; ok {
 		grpcPort = entry[0]
 	} else { // no grpcport in header
-		http.Error(w, "Missing gRPC port header", 401)
+		http.Error(w, "Missing gRPC port header", 400)
 		return
+	}
+
+	var remoteIp string
+
+	if entry, ok := req.Header["X-Forwarded-For"]; ok {
+		fmt.Printf("HTTP SERVER: Found x-forwarded-for header: %v", entry)
+		remoteIp = strings.Split(entry[0], ":")[0]
+	} else {
+		fmt.Printf("HTTP SERVER: Did not find x-forwarded-for header! >:(")
 	}
 
 	consumerAddress := remoteIp + ":" + grpcPort
