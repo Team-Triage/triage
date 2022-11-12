@@ -37,6 +37,7 @@ func handler(w http.ResponseWriter, req *http.Request) {
 		remoteIp = strings.Split(entry[0], ":")[0]
 	} else {
 		fmt.Println("HTTP SERVER: Did not find x-forwarded-for header! >:(")
+		remoteIp = strings.Split(req.RemoteAddr, ":")[0]
 	}
 
 	consumerAddress := remoteIp + ":" + grpcPort

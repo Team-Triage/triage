@@ -58,9 +58,9 @@ func consume(c *kafka.Consumer, topic string) {
 			fmt.Printf("Caught signal %v: terminating\n", sig)
 			run = false
 		default:
-			ev, err := c.ReadMessage(100 * time.Millisecond)
+			ev, err := c.ReadMessage(100 * time.Second)
 			if err != nil {
-				// Errors are informational and automatically handled by the consumer
+				fmt.Printf("FETCHER: Error from ReadMessage %v!\n", err)
 				continue
 			}
 			messages.AppendMessage(ev) // writing event to channel
