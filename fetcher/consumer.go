@@ -5,6 +5,8 @@ import (
 	"os"
 	"sync"
 	"time"
+ "os/signal"
+	"syscall"
 
 	"github.com/team-triage/triage/channels/commits"
 	"github.com/team-triage/triage/channels/messages"
@@ -45,16 +47,16 @@ func consume(c *kafka.Consumer, topic string) {
 		os.Exit(1)
 	}
 	// Set up a channel for handling Ctrl-C, etc
-	// sigchan := make(chan os.Signal, 1)
-	// signal.Notify(sigchan, syscall.SIGINT, syscall.SIGTERM)
+	sigchan := make(chan os.Signal, 1)
+	signal.Notify(sigchan, syscall.SIGINT, syscall.SIGTERM)
 	// Process messages
 	fmt.Println("FETCHER: Consumer running!")
 	run := true
 	for run {
 		select {
-		// case sig := <-sigchan:
-		// 	fmt.Printf("Caught signal %v: terminating\n", sig)
-		// 	run = false
+		case sig := <-sigchan:
+			fmt.Printf("Caught signal %v: terminating\n", sig)
+			run = false
 		default:
 			ev, err := c.ReadMessage(100 * time.Second)
 			if err != nil {
