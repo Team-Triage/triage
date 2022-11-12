@@ -31,7 +31,7 @@ func main() {
 	fmt.Println(kafkaConf)
 	topic := config["kafka.topic"]
 
-	wg.Add(7)
+	wg.Add(6)
 	go fetcher.Fetch(topic, kafkaConf)
 	go dispatch.Dispatch()
 	go filter.Filter()
