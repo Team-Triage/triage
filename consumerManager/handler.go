@@ -3,7 +3,7 @@ package consumerManager
 import (
 	"fmt"
 	"net/http"
-	// "strings"
+	"strings"
 
 	"github.com/team-triage/triage/channels/newConsumers"
 )
@@ -30,15 +30,15 @@ func handler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	var remoteIp string = "127.0.0.1"
+	var remoteIp string
 
-	// if entry, ok := req.Header["X-Forwarded-For"]; ok {
-	// 	fmt.Printf("HTTP SERVER: Found x-forwarded-for header: %v\n", entry)
-	// 	remoteIp = strings.Split(entry[0], ":")[0]
-	// } else {
-	// 	fmt.Println("HTTP SERVER: Did not find x-forwarded-for header! >:(")
-	// 	remoteIp = strings.Split(req.RemoteAddr, ":")[0]
-	// }
+	if entry, ok := req.Header["X-Forwarded-For"]; ok {
+		fmt.Printf("HTTP SERVER: Found x-forwarded-for header: %v\n", entry)
+		remoteIp = strings.Split(entry[0], ":")[0]
+	} else {
+		fmt.Println("HTTP SERVER: Did not find x-forwarded-for header! >:(")
+		remoteIp = strings.Split(req.RemoteAddr, ":")[0]
+	}
 
 	consumerAddress := remoteIp + ":" + grpcPort
 	fmt.Printf("CONSUMER MANAGER: Consumer requested connection from: %v\n", remoteIp)

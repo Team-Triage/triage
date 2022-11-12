@@ -68,7 +68,7 @@ func consume(c *kafka.Consumer, topic string) {
 			commitTable.CommitHash.Write(int(ev.TopicPartition.Offset), commitStore)
 		}
 	}
-	c.Close()
+	// c.Close()
 }
 
 func committer(c *kafka.Consumer) {

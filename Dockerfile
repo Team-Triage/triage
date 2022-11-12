@@ -15,4 +15,3 @@ RUN go get -d -v
 RUN go build -a -v -tags musl -o /triage
 
 CMD [ "/triage" ]
-
