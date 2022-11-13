@@ -3,10 +3,10 @@ package fetcher
 import (
 	"fmt"
 	"os"
+	"os/signal"
 	"sync"
-	"time"
- "os/signal"
 	"syscall"
+	"time"
 
 	"github.com/team-triage/triage/channels/commits"
 	"github.com/team-triage/triage/channels/messages"
@@ -27,9 +27,9 @@ func Fetch(topic string, kafkaConf kafka.ConfigMap) {
 }
 
 func makeConsumer(kafkaConf kafka.ConfigMap) *kafka.Consumer {
-	kafkaConf["group.id"] = "kafka-go-getting-started" // need to make this an environmental variable so all instances of a given deployment share the same group.id
-	kafkaConf["auto.offset.reset"] = "earliest"        // REQUIRES ADDITIONAL READING policy for when triage first connects to Kafka
-	kafkaConf["enable.auto.commit"] = "false"          // turned off for manual committing (see consumer.Commit() or consumer.CommitMessage())
+	kafkaConf["group.id"] = "team-triage"       // need to make this an environmental variable so all instances of a given deployment share the same group.id
+	kafkaConf["auto.offset.reset"] = "earliest" // REQUIRES ADDITIONAL READING policy for when triage first connects to Kafka
+	kafkaConf["enable.auto.commit"] = "false"   // turned off for manual committing (see consumer.Commit() or consumer.CommitMessage())
 
 	c, err := kafka.NewConsumer(&kafkaConf)
 
@@ -68,7 +68,7 @@ func consume(c *kafka.Consumer, topic string) {
 			commitTable.CommitHash.Write(int(ev.TopicPartition.Offset), commitStore)
 		}
 	}
-	// c.Close()
+	c.Close()
 }
 
 func committer(c *kafka.Consumer) {
