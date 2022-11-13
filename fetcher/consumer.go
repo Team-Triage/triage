@@ -27,9 +27,9 @@ func Fetch(topic string, kafkaConf kafka.ConfigMap) {
 }
 
 func makeConsumer(kafkaConf kafka.ConfigMap) *kafka.Consumer {
-	kafkaConf["group.id"] = "kafka-go-getting-started" // need to make this an environmental variable so all instances of a given deployment share the same group.id
-	kafkaConf["auto.offset.reset"] = "earliest"        // REQUIRES ADDITIONAL READING policy for when triage first connects to Kafka
-	kafkaConf["enable.auto.commit"] = "false"          // turned off for manual committing (see consumer.Commit() or consumer.CommitMessage())
+	kafkaConf["group.id"] = "team-triage"       // need to make this an environmental variable so all instances of a given deployment share the same group.id
+	kafkaConf["auto.offset.reset"] = "earliest" // REQUIRES ADDITIONAL READING policy for when triage first connects to Kafka
+	kafkaConf["enable.auto.commit"] = "false"   // turned off for manual committing (see consumer.Commit() or consumer.CommitMessage())
 
 	c, err := kafka.NewConsumer(&kafkaConf)
 
@@ -58,9 +58,9 @@ func consume(c *kafka.Consumer, topic string) {
 			fmt.Printf("Caught signal %v: terminating\n", sig)
 			run = false
 		default:
-			ev, err := c.ReadMessage(100 * time.Millisecond)
+			ev, err := c.ReadMessage(100 * time.Second)
 			if err != nil {
-				// Errors are informational and automatically handled by the consumer
+				fmt.Printf("FETCHER: Error from ReadMessage %v!\n", err)
 				continue
 			}
 			messages.AppendMessage(ev) // writing event to channel
