@@ -31,6 +31,7 @@ func senderRoutine(client pb.MessageHandlerClient, networkAddress string, conn *
 		event := messages.GetMessage()
 		fmt.Printf("DISPATCH: Sending event at offset %v: %v\n", int(event.TopicPartition.Offset), string(event.Value))
 
+
 		respStatus, err := grpcUtils.SendMessage(client, string(event.Value))
 
 		if err != nil {
