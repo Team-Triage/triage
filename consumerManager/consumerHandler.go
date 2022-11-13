@@ -8,7 +8,7 @@ import (
 	"github.com/team-triage/triage/channels/newConsumers"
 )
 
-func handler(w http.ResponseWriter, req *http.Request) {
+func consumerHandler(w http.ResponseWriter, req *http.Request) {
 	dummyToken := "dummyToken"
 
 	if entry, ok := req.Header["Authorization"]; ok {

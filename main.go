@@ -36,7 +36,7 @@ func main() {
 	go dispatch.Dispatch()
 	go filter.Filter()
 	go reaper.Reap()
-	go consumerManager.Start()
+	go consumerManager.StartHttpServer()
 	go commitCalculator.Calculate()
 	// go tmp.Receiver()
 	wg.Wait()
