@@ -61,6 +61,7 @@ func consume(c *kafka.Consumer, topic string) {
 			ev, err := c.ReadMessage(100 * time.Second)
 			if err != nil {
 				fmt.Printf("FETCHER: Error from ReadMessage %v!\n", err)
+
 				continue
 			}
 			messages.AppendMessage(ev) // writing event to channel
