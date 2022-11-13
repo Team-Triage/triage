@@ -2,9 +2,13 @@ package consumerManager
 
 import (
 	"net/http"
+	// "fmt"
+	// "encoding/json"
+	// "log"
 )
 
-func StartServer(callback func(w http.ResponseWriter, req *http.Request)) {
-	http.HandleFunc("/consumers", callback)
+func StartHttpServer() {
+	http.HandleFunc("/consumers", consumerHandler)
+	http.HandleFunc("/health", healthCallback)
 	http.ListenAndServe(":9000", nil)
 }

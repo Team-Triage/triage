@@ -40,7 +40,9 @@ func (s *SafeCommitHash) Delete(key int) {
 }
 
 func (s *SafeCommitHash) GetOffsets() []int {
+	s.Mutex.Lock()
 	offsets := maps.Keys(s.hash)
 	sort.Ints(offsets)
+	s.Mutex.Unlock()
 	return offsets
 }
