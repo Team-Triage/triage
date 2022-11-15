@@ -9,6 +9,6 @@ import (
 
 func StartHttpServer() {
 	http.HandleFunc("/consumers", consumerHandler)
-	http.HandleFunc("/health", healthCallback)
+	http.HandleFunc("/", healthCallback)
 	http.ListenAndServe(":9000", nil)
 }

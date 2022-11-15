@@ -33,7 +33,7 @@ func writeDeadLetter(ev *kafka.Message, svc *dynamodb.DynamoDB) error {
 		fmt.Printf("Got error marshalling new deadLetter item: %s\n", err)
 	}
 
-	tableName := "Dead_Letters" // should probably be topic_dead_letters; maybe an env var
+	tableName := "TriageDeadLettersTopicName" // should probably be topic_dead_letters; maybe an env var
 
 	input := &dynamodb.PutItemInput{
 		Item:      av,

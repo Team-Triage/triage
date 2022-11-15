@@ -9,7 +9,7 @@ import (
 
 func makeDynamoSession() *session.Session {
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
+		SharedConfigState: session.SharedConfigDisable,
 	}))
 	return sess
 }
