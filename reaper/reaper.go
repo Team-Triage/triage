@@ -7,18 +7,16 @@ import (
 	"github.com/team-triage/triage/data/commitTable"
 )
 
-func Reap() {
+func Reap(deadLetterTableName string) {
 	sess := makeDynamoSession()
-	svc := makeDynamoClient(sess)
-	// create dynamo session
-	// create dynamo client
-	// pass to writer function
+	dynamoClient := makeDynamoClient(sess)
+
 	for {
 		ack := deadLetters.GetMessage()
 
 		fmt.Printf("REAPER: Got a dead letter: %v \n", string(ack.Event.Value))
 
-		err := writeDeadLetter(ack.Event, svc)
+		err := writeDeadLetter(ack.Event, dynamoClient, deadLetterTableName)
 
 		// below clause to be removed pending deployed DynamoDB instance
 		if err != nil {

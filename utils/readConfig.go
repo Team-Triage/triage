@@ -5,12 +5,16 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/team-triage/triage/types"
 )
 
-func ReadConfig(configFile string) map[string]string {
-	m := make(map[string]string)
+func readConfig(configFilePath string) (config types.TriageConfig, kafkaConfigs map[string]string) {
 
-	file, err := os.Open(configFile)
+	config = types.TriageConfig{}
+	kafkaConfigs = make(map[string]string)
+
+	file, err := os.Open(configFilePath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to open file: %s", err)
 		os.Exit(1)
@@ -24,7 +28,17 @@ func ReadConfig(configFile string) map[string]string {
 			kv := strings.Split(line, "=")
 			parameter := strings.TrimSpace(kv[0])
 			value := strings.TrimSpace(kv[1])
-			m[parameter] = value
+			if parameter == "topic.name" {
+				config.TopicName = value
+				continue
+			} else if parameter == "authentication.token" {
+				config.AuthenticationToken = value
+				continue
+			} else if parameter == "num.of.partitions" {
+				continue
+			} else {
+				kafkaConfigs[parameter] = value
+			}
 		}
 	}
 
@@ -33,5 +47,5 @@ func ReadConfig(configFile string) map[string]string {
 		os.Exit(1)
 	}
 
-	return m
+	return config, kafkaConfigs
 }

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/team-triage/triage/commitCalculator"
 	"github.com/team-triage/triage/consumerManager"
 	"github.com/team-triage/triage/dispatch"
@@ -17,27 +16,27 @@ import (
 var wg sync.WaitGroup
 
 func main() {
-	kafkaConf := kafka.ConfigMap{}
-	fmt.Println("Triage firing up!!!")
+	fmt.Println("Triage starting!")
 
-	path := "config.properties"
-	config := utils.ReadConfig(path)
-	kafkaConf["bootstrap.servers"] = config["bootstrap.servers"]
-	kafkaConf["security.protocol"] = config["security.protocol"]
-	kafkaConf["sasl.mechanisms"] = config["sasl.mechanisms"]
-	kafkaConf["sasl.username"] = config["sasl.username"]
-	kafkaConf["sasl.password"] = config["sasl.password"]
-	kafkaConf["session.timeout.ms"] = config["session.timeout.ms"]
-	fmt.Println(kafkaConf)
-	topic := config["kafka.topic"]
+	config := utils.GetConfig()
 
-	wg.Add(6)
-	go fetcher.Fetch(topic, kafkaConf)
+	wg.Add(1)
+	go fetcher.Fetch(config.TopicName, config.KafkaConfigMap)
+
+	wg.Add(1)
 	go dispatch.Dispatch()
+
+	wg.Add(1)
 	go filter.Filter()
-	go reaper.Reap()
+
+	wg.Add(1)
+	go reaper.Reap(config.DeadLetterTableName)
+
+	consumerManager.SetToken(config.AuthenticationToken)
+	wg.Add(1)
 	go consumerManager.StartHttpServer()
+
+	wg.Add(1)
 	go commitCalculator.Calculate()
-	// go tmp.Receiver()
 	wg.Wait()
 }
