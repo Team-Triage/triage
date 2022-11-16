@@ -47,5 +47,6 @@ func readConfig(configFilePath string) (config types.TriageConfig, kafkaConfigs 
 		os.Exit(1)
 	}
 
+	config.DeadLetterTableName = "TriageDeadLetters" + config.TopicName
 	return config, kafkaConfigs
 }
