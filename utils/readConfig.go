@@ -34,6 +34,8 @@ func readConfig(configFilePath string) (config types.TriageConfig, kafkaConfigs 
 			} else if parameter == "authentication.token" {
 				config.AuthenticationToken = value
 				continue
+			} else if parameter == "num.of.partitions" {
+				continue
 			} else {
 				kafkaConfigs[parameter] = value
 			}
