@@ -10,7 +10,7 @@ import (
 	"github.com/team-triage/triage/types"
 )
 
-func writeDeadLetter(ev *kafka.Message, svc *dynamodb.DynamoDB) error {
+func writeDeadLetter(ev *kafka.Message, dynamoClient *dynamodb.DynamoDB, deadLetterTableName string) error {
 	headersString := ""
 
 	for _, header := range ev.Headers {
@@ -33,18 +33,16 @@ func writeDeadLetter(ev *kafka.Message, svc *dynamodb.DynamoDB) error {
 		fmt.Printf("Got error marshalling new deadLetter item: %s\n", err)
 	}
 
-	tableName := "Dead_Letters" // should probably be topic_dead_letters; maybe an env var
-
 	input := &dynamodb.PutItemInput{
 		Item:      av,
-		TableName: aws.String(tableName),
+		TableName: aws.String(deadLetterTableName),
 	}
 
-	_, err = svc.PutItem(input)
+	_, err = dynamoClient.PutItem(input)
 	if err != nil {
 		fmt.Printf("Got error calling PutItem: %s\n", err)
 	}
 
-	fmt.Println("Successfully added '" + deadLetter.String + "' to table " + tableName)
+	fmt.Println("Successfully added '" + deadLetter.String + "' to table " + deadLetterTableName)
 	return err
 }

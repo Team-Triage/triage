@@ -2,9 +2,6 @@ package consumerManager
 
 import (
 	"net/http"
-	// "fmt"
-	// "encoding/json"
-	// "log"
 )
 
 func StartHttpServer() {

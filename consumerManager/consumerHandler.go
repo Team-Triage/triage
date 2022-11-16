@@ -8,11 +8,15 @@ import (
 	"github.com/team-triage/triage/channels/newConsumers"
 )
 
-func consumerHandler(w http.ResponseWriter, req *http.Request) {
-	dummyToken := "dummyToken"
+var authenticationToken string
 
+func SetToken(token string) {
+	authenticationToken = token
+}
+
+func consumerHandler(w http.ResponseWriter, req *http.Request) {
 	if entry, ok := req.Header["Authorization"]; ok {
-		if dummyToken != entry[0] { // token doesn't match
+		if authenticationToken != entry[0] { // token doesn't match
 			http.Error(w, "Malformed or invalid authorization token", 401)
 			return
 		}
@@ -35,8 +39,8 @@ func consumerHandler(w http.ResponseWriter, req *http.Request) {
 	if entry, ok := req.Header["X-Forwarded-For"]; ok {
 		fmt.Printf("HTTP SERVER: Found x-forwarded-for header: %v\n", entry)
 		remoteIp = strings.Split(entry[0], ":")[0]
-	} else {
-		fmt.Println("HTTP SERVER: Did not find x-forwarded-for header! >:(")
+	} else { // should remove this clause for deployment, since it's only for localized testing and triage will always be deployed behind a load balancer
+		fmt.Println("HTTP SERVER: Did not find x-forwarded-for header!")
 		remoteIp = strings.Split(req.RemoteAddr, ":")[0]
 	}
 
