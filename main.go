@@ -19,7 +19,7 @@ func main() {
 	fmt.Println("Triage starting!")
 
 	config := utils.GetConfig()
-
+	fmt.Println(config)
 	wg.Add(1)
 	go fetcher.Fetch(config.TopicName, config.KafkaConfigMap)
 

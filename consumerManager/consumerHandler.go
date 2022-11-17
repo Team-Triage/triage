@@ -17,7 +17,8 @@ func SetToken(token string) {
 func consumerHandler(w http.ResponseWriter, req *http.Request) {
 	if entry, ok := req.Header["Authorization"]; ok {
 		if authenticationToken != entry[0] { // token doesn't match
-			http.Error(w, "Malformed or invalid authorization token", 401)
+			http.Error(w, "Your token doesn't match; we expected:"+authenticationToken+"\n"+"We got:"+entry[0], 401)
+			// http.Error(w, "Malformed or invalid authorization token", 401)
 			return
 		}
 	} else { // missing token
