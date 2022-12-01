@@ -64,7 +64,8 @@ func consume(c *kafka.Consumer, topic string) {
 
 				continue
 			}
-			messages.AppendMessage(ev) // writing event to channel
+			// writing event to channel
+			messages.AppendMessage(ev)
 			commitStore := types.CommitStore{Value: false, Message: ev}
 			commitTable.CommitHash.Write(int(ev.TopicPartition.Offset), commitStore)
 		}
