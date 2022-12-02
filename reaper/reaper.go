@@ -18,14 +18,9 @@ func Reap(deadLetterTableName string) {
 
 		err := writeDeadLetter(ack.Event, dynamoClient, deadLetterTableName)
 
-		// below clause to be removed pending deployed DynamoDB instance
 		if err != nil {
 			fmt.Println("REAPER: DynamoDB not available!")
 		}
-
-		// for err != nil {
-		// 	err = writeDeadLetter(ack.Event, svc)
-		// } // if we get an error, keep trying to send to dynamo
 
 		if entry, ok := commitTable.CommitHash.Read(ack.Offset); ok {
 			entry.Value = true
