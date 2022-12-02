@@ -18,7 +18,7 @@ import (
 
 func Fetch(topic string, kafkaConf kafka.ConfigMap) {
 	var wg sync.WaitGroup
-	c := makeConsumer(kafkaConf)
+	c := makeConsumer(kafkaConf, topic)
 	go consume(c, topic)
 	wg.Add(1)
 	go committer(c)
@@ -26,8 +26,8 @@ func Fetch(topic string, kafkaConf kafka.ConfigMap) {
 	wg.Wait()
 }
 
-func makeConsumer(kafkaConf kafka.ConfigMap) *kafka.Consumer {
-	kafkaConf["group.id"] = "team-triage"       // need to make this an environmental variable so all instances of a given deployment share the same group.id
+func makeConsumer(kafkaConf kafka.ConfigMap, topic string) *kafka.Consumer {
+	kafkaConf["group.id"] = "triage-" + topic   // need to make this an environmental variable so all instances of a given deployment share the same group.id
 	kafkaConf["auto.offset.reset"] = "earliest" // REQUIRES ADDITIONAL READING policy for when triage first connects to Kafka
 	kafkaConf["enable.auto.commit"] = "false"   // turned off for manual committing (see consumer.Commit() or consumer.CommitMessage())
 
