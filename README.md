@@ -1,5 +1,5 @@
 # Triage
-Triage is a open-source Kafka consumer proxy service that solves head-of-line blocking while preventing data-loss through increased parallelism, commit tracking, and a dead-letter store. 
+Triage is an open source Kafka consumer proxy service that solves head-of-line blocking while preventing data-loss through increased parallelism, commit tracking, and a dead-letter store. 
 
 Triage operates as an AWS Fargate service deployed to a users AWS account. It sits between your Kafka cluster and consumer applications and can be interacted with via a thin client library. 
 
