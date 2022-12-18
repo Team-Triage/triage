@@ -3,7 +3,7 @@ Triage is an open source Kafka consumer proxy service that solves head-of-line b
 
 Triage operates as an AWS Fargate service deployed to a users AWS account. It sits between your Kafka cluster and consumer applications and can be interacted with via a thin client library. 
 
-To read more about Triage, visit: [INSERT WEBSITE ADDRESS]
+To read more about Triage, visit: https://team-triage.github.io/
 
 <h2>How to Use Triage</h2>
 
