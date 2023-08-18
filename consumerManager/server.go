@@ -1,11 +1,18 @@
 package consumerManager
 
 import (
+	"log"
 	"net/http"
 )
 
 func StartHttpServer() {
-	http.HandleFunc("/consumers", consumerHandler)
-	http.HandleFunc("/", healthCallback)
-	http.ListenAndServe(":9000", nil)
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/consumers", consumerHandler)
+	mux.HandleFunc("/", healthCallback)
+	err := http.ListenAndServe(":9000", mux)
+
+	if err != nil {
+		log.Println(err)
+	}
 }
